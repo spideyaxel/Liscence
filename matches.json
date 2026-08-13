@@ -1,0 +1,44 @@
+[
+  {
+    "game": "Valorant",
+    "tournament": "VCT EMEA Play-Ins",
+    "date": "2026-08-08T00:00:00Z",
+    "status": "finished",
+    "team1": {
+      "name": "Gentle Mates",
+      "score": "0"
+    },
+    "team2": {
+      "name": "Enterprise Esports",
+      "score": "2"
+    }
+  },
+  {
+    "game": "Valorant",
+    "tournament": "Unknown Tournament",
+    "date": "2026-08-12T15:00:00Z",
+    "status": "finished",
+    "team1": {
+      "name": "Eintracht Frankfurt",
+      "score": "2"
+    },
+    "team2": {
+      "name": "Gentle Mates",
+      "score": "1"
+    }
+  },
+  {
+    "game": "Valorant",
+    "tournament": "VCT 2026: EMEA Stage 2",
+    "date": "2026-08-14T00:36:00Z",
+    "status": "upcoming",
+    "team1": {
+      "name": "Gentle Mates",
+      "score": null
+    },
+    "team2": {
+      "name": "SGE",
+      "score": null
+    }
+  }
+]
