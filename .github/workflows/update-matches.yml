@@ -2,11 +2,11 @@ name: Mettre a jour les matchs M8
 
 on:
   schedule:
-    - cron: '0 */4 * * *' # Tourne toutes les 4 heures
-  workflow_dispatch: # Bouton pour lancer manuellement
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
 
 permissions:
-  contents: write # Autorise le robot à enregistrer des fichiers sur le dépôt
+  contents: write
 
 jobs:
   update-data:
