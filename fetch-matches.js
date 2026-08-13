@@ -77,15 +77,32 @@ Aucun bloc \`\`\`json.
 Si aucun match n'est trouvé, retourne [].`;
 
   try {
-    // Utilisation de l'API stable v1 et gemini-1.5-flash
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: promptText }] }],
-        tools: [{ googleSearch: {} }]
-      })
-    });
+    // API Gemini actuelle avec Gemini 2.5 Flash
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: promptText
+                }
+              ]
+            }
+          ],
+          tools: [
+            {
+              googleSearch: {}
+            }
+          ]
+        })
+      }
+    );
 
     if (!response.ok) {
       const errText = await response.text();
@@ -93,25 +110,45 @@ Si aucun match n'est trouvé, retourne [].`;
     }
 
     const data = await response.json();
-    const rawResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
-    
+
+    const rawResponse =
+      data.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
+
     // Nettoyage de sécurité
-    let cleanJson = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
+    let cleanJson = rawResponse
+      .replace(/```json/g, '')
+      .replace(/```/g, '')
+      .trim();
+
     const firstBracket = cleanJson.indexOf('[');
     const lastBracket = cleanJson.lastIndexOf(']');
-    
+
     if (firstBracket !== -1 && lastBracket !== -1) {
       cleanJson = cleanJson.substring(firstBracket, lastBracket + 1);
     }
 
     const parsedData = JSON.parse(cleanJson);
 
+    // Vérification minimale : le résultat doit être un tableau
+    if (!Array.isArray(parsedData)) {
+      throw new Error("La réponse Gemini n'est pas un tableau JSON valide.");
+    }
+
     // Écriture du fichier matches.json
-    fs.writeFileSync('matches.json', JSON.stringify(parsedData, null, 2));
-    console.log("✅ Fichier matches.json mis à jour avec succès via l'API v1 !");
+    fs.writeFileSync(
+      'matches.json',
+      JSON.stringify(parsedData, null, 2)
+    );
+
+    console.log(
+      "✅ Fichier matches.json mis à jour avec succès via Gemini 2.5 Flash !"
+    );
 
   } catch (error) {
-    console.error("❌ Erreur lors de la génération :", error.message);
+    console.error(
+      "❌ Erreur lors de la génération :",
+      error.message
+    );
     process.exit(1);
   }
 }
