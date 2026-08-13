@@ -77,8 +77,8 @@ Aucun bloc \`\`\`json.
 Si aucun match n'est trouvé, retourne [].`;
 
   try {
-    // Utilisation de gemini-2.0-flash
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`, {
+    // Utilisation de l'API stable v1 et gemini-1.5-flash
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -108,7 +108,7 @@ Si aucun match n'est trouvé, retourne [].`;
 
     // Écriture du fichier matches.json
     fs.writeFileSync('matches.json', JSON.stringify(parsedData, null, 2));
-    console.log("✅ Fichier matches.json mis à jour avec succès !");
+    console.log("✅ Fichier matches.json mis à jour avec succès via l'API v1 !");
 
   } catch (error) {
     console.error("❌ Erreur lors de la génération :", error.message);
