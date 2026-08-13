@@ -1,5 +1,0 @@
-- name: Lancer le script IA
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # <--- LIGNE À AJOUTER
-        run: node fetch-matches.js
