@@ -1,34 +1,5 @@
-name: Mettre a jour les matchs M8
-
-on:
-  schedule:
-    - cron: '0 */4 * * *'
-  workflow_dispatch:
-
-permissions:
-  contents: write
-
-jobs:
-  update-data:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Récupérer le code
-        uses: actions/checkout@v3
-
-      - name: Installer Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Lancer le script IA
+- name: Lancer le script IA
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # <--- LIGNE À AJOUTER
         run: node fetch-matches.js
-
-      - name: Sauvegarder le nouveau fichier JSON sur GitHub
-        run: |
-          git config --global user.name 'GitHub Action Bot'
-          git config --global user.email 'action@github.com'
-          git add matches.json
-          git commit -m "Actualisation automatique des matchs" || exit 0
-          git push
