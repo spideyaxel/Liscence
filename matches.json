@@ -1,155 +1,29 @@
 [
   {
     "game": "Valorant",
+    "tournament": "VCT 2026: Game Changers EMEA Stage 3",
+    "date": "2026-08-03T15:25:00Z",
+    "status": "finished",
+    "team1": {
+      "name": "Gentle Mates",
+      "score": "1"
+    },
+    "team2": {
+      "name": "Karmine Corp GC",
+      "score": "2"
+    }
+  },
+  {
+    "game": "Valorant",
     "tournament": "VCT 2026: EMEA Stage 2",
-    "date": "2026-08-09T18:00:00Z",
-    "status": "finished",
-    "team1": {
-      "name": "Gentle Mates",
-      "score": "2"
-    },
-    "team2": {
-      "name": "Enterprise Esports",
-      "score": "0"
-    }
-  },
-  {
-    "game": "Valorant",
-    "tournament": "VCT EMEA: Stage 2",
-    "date": "2026-07-31T18:00:00Z",
-    "status": "finished",
-    "team1": {
-      "name": "Gentle Mates",
-      "score": "1"
-    },
-    "team2": {
-      "name": "BBL Esports",
-      "score": "2"
-    }
-  },
-  {
-    "game": "Valorant",
-    "tournament": "Valorant Champions Tour 2026 Pacific Stage 2",
-    "date": "2026-07-29T17:16:00Z",
-    "status": "finished",
-    "team1": {
-      "name": "Gentle Mates",
-      "score": "1"
-    },
-    "team2": {
-      "name": "Team Vitality",
-      "score": "2"
-    }
-  },
-  {
-    "game": "Valorant",
-    "tournament": "Valorant Champions Tour 2026 Pacific Stage 2",
-    "date": "2026-07-23T17:20:00Z",
-    "status": "finished",
-    "team1": {
-      "name": "Gentle Mates",
-      "score": "2"
-    },
-    "team2": {
-      "name": "Natus Vincere",
-      "score": "0"
-    }
-  },
-  {
-    "game": "Valorant",
-    "tournament": "Valorant Champions Tour 2026 Pacific Stage 2",
-    "date": "2026-07-18T15:06:00Z",
+    "date": "2026-08-12T15:00:00Z",
     "status": "finished",
     "team1": {
       "name": "Gentle Mates",
       "score": "0"
     },
     "team2": {
-      "name": "FUT Esports",
-      "score": "2"
-    }
-  },
-  {
-    "game": "Valorant",
-    "tournament": "Valorant Champions Tour 2026 Pacific Stage 2",
-    "date": "2026-07-16T17:36:00Z",
-    "status": "finished",
-    "team1": {
-      "name": "Gentle Mates",
-      "score": "2"
-    },
-    "team2": {
-      "name": "Pcific Esports",
-      "score": "1"
-    }
-  },
-  {
-    "game": "Valorant",
-    "tournament": "Esports World Cup 2026",
-    "date": "2026-07-09T18:00:00Z",
-    "status": "finished",
-    "team1": {
-      "name": "Gentle Mates",
-      "score": "1"
-    },
-    "team2": {
-      "name": "NRG",
-      "score": "2"
-    }
-  },
-  {
-    "game": "Valorant",
-    "tournament": "Esports World Cup 2026",
-    "date": "2026-07-05T18:00:00Z",
-    "status": "finished",
-    "team1": {
-      "name": "Gentle Mates",
-      "score": "2"
-    },
-    "team2": {
-      "name": "Nongshim RedForce",
-      "score": "1"
-    }
-  },
-  {
-    "game": "Valorant",
-    "tournament": "Valorant Champions Tour 2026 Pacific Stage 2",
-    "date": "2026-05-23T18:00:00Z",
-    "status": "finished",
-    "team1": {
-      "name": "Gentle Mates",
-      "score": "3"
-    },
-    "team2": {
-      "name": "FUT Esports",
-      "score": "0"
-    }
-  },
-  {
-    "game": "Valorant",
-    "tournament": "VALORANT Masters Santiago 2026 Swiss Stage",
-    "date": "2026-05-22T18:00:00Z",
-    "status": "finished",
-    "team1": {
-      "name": "Gentle Mates",
-      "score": "2"
-    },
-    "team2": {
-      "name": "Team Liquid",
-      "score": "0"
-    }
-  },
-  {
-    "game": "Valorant",
-    "tournament": "VCT 2026: EMEA Stage 1 Lower Bracket",
-    "date": "2026-05-10T18:00:00Z",
-    "status": "finished",
-    "team1": {
-      "name": "Gentle Mates",
-      "score": "0"
-    },
-    "team2": {
-      "name": "Eternal Fire",
+      "name": "Eintracht Frankfurt",
       "score": "2"
     }
   }
