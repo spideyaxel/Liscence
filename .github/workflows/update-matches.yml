@@ -3,7 +3,10 @@ name: Mettre a jour les matchs M8
 on:
   schedule:
     - cron: '0 */4 * * *' # Tourne toutes les 4 heures
-  workflow_dispatch: # Permet d'avoir un bouton pour le lancer manuellement sur GitHub
+  workflow_dispatch: # Bouton pour lancer manuellement
+
+permissions:
+  contents: write # Autorise le robot à enregistrer des fichiers sur le dépôt
 
 jobs:
   update-data:
@@ -27,6 +30,5 @@ jobs:
           git config --global user.name 'GitHub Action Bot'
           git config --global user.email 'action@github.com'
           git add matches.json
-          # Si le fichier a changé, on le commit, sinon on ne fait rien
           git commit -m "Actualisation automatique des matchs" || exit 0
           git push
