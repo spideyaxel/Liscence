@@ -77,7 +77,8 @@ Aucun bloc \`\`\`json.
 Si aucun match n'est trouvé, retourne [].`;
 
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+    // Utilisation du modèle stable gemini-1.5-flash
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -94,7 +95,7 @@ Si aucun match n'est trouvé, retourne [].`;
     const data = await response.json();
     const rawResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
     
-    // Nettoyage de sécurité au cas où le modèle mettrait quand même des balises
+    // Nettoyage de sécurité
     let cleanJson = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
     const firstBracket = cleanJson.indexOf('[');
     const lastBracket = cleanJson.lastIndexOf(']');
