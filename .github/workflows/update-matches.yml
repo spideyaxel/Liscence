@@ -1,9 +1,9 @@
-name: Actualisation des Matchs M8
+name: Actualisation des Matchs M8 (Gemini)
 
 on:
   schedule:
     - cron: '0 */6 * * *' # S'exécute toutes les 6 heures
-  workflow_dispatch: # Permet de lancer le script à la main
+  workflow_dispatch: # Permet le lancement manuel depuis GitHub
 
 jobs:
   update-data:
@@ -20,9 +20,9 @@ jobs:
         with:
           node-version: 20
 
-      - name: Exécuter le script avec OpenAI
+      - name: Exécuter le script avec Gemini
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node fetch-matches.js
 
       - name: Commiter et pousser les changements
@@ -30,4 +30,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add matches.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "bot: mise à jour des matchs M8" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "bot: mise à jour des matchs M8 (Gemini)" && git push)
