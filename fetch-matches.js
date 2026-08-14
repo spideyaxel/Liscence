@@ -1,73 +1,33 @@
-const fs = require('fs');
+name: Actualisation des Matchs M8
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+on:
+  schedule:
+    - cron: '0 */6 * * *' # S'exécute toutes les 6 heures
+  workflow_dispatch: # Permet de lancer le script à la main
 
-if (!OPENAI_API_KEY) {
-  console.error("❌ ERREUR : La clé OPENAI_API_KEY est manquante dans les variables !");
-  process.exit(1);
-}
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
-// 🎯 TON PROMPT RÉCUPÉRÉ ET OPTIMISÉ POUR LE JSON STRICT
-const promptText = `Tu es une API JSON stricte spécialisée dans les matchs esport de Gentle Mates (M8).
-À CHAQUE EXÉCUTION, effectue une recherche web en temps réel (ou utilise tes données les plus récentes) et récupère les données concernant TOUS les jeux esport dans lesquels Gentle Mates possède une équipe.
-SOURCE PRINCIPALE : [https://bo3.gg/fr/valorant/teams/gentle-mates/matches](https://bo3.gg/fr/valorant/teams/gentle-mates/matches) et sources fiables.
+    steps:
+      - name: Récupérer le code du dépôt
+        uses: actions/checkout@v4
 
-IMPORTANT :
-- Ne te limite PAS à VALORANT. Recherche également les autres équipes et jeux.
-- Pour chaque jeu, récupère les matchs récemment terminés, en cours et tous les prochains matchs annoncés.
-- Les données doivent être actualisées. Ne réutilise jamais des données précédentes.
-- N'invente aucune information. Si une donnée est inconnue, utilise "0" pour le score.
-- Convertis les dates en ISO 8601 UTC.
-- Trie chronologiquement.
+      - name: Configuration de Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-FORMAT ATTENDU POUR CHAQUE MATCH :
-{
-  "game": "Nom du jeu",
-  "tournament": "Nom du tournoi",
-  "date": "2026-08-12T18:00:00Z",
-  "status": "finished",
-  "team1": { "name": "Gentle Mates", "score": "2" },
-  "team2": { "name": "Adversaire", "score": "1" }
-}
-STATUTS AUTORISÉS : "finished", "running", "upcoming".
+      - name: Exécuter le script avec OpenAI
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node fetch-matches.js
 
-CONTRAINTE ABSOLUE : Tu dois OBLIGATOIREMENT retourner un objet JSON contenant une seule clé "matches" avec ton tableau de résultats à l'intérieur. 
-Exemple : { "matches": [ { ... }, { ... } ] }`;
-
-async function fetchMatches() {
-  console.log("🔄 Lancement de la récupération avec ton prompt (OpenAI GPT-4o)...");
-  
-  try {
-    const response = await fetch("[https://api.openai.com/v1/chat/completions](https://api.openai.com/v1/chat/completions)", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        response_format: { type: "json_object" }, // 🪄 LA MAGIE : Bloque l'IA dans un format JSON parfait
-        messages: [{ role: "user", content: promptText }]
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Erreur API OpenAI (${response.status}) : ${await response.text()}`);
-    }
-    
-    const data = await response.json();
-    
-    // On parse le résultat qui est garanti d'être du JSON propre
-    const parsedData = JSON.parse(data.choices[0].message.content);
-    
-    // On extrait uniquement le tableau pour que ton fichier HTML (matchs.html) le lise correctement
-    fs.writeFileSync('matches.json', JSON.stringify(parsedData.matches, null, 2));
-    console.log(`✅ Fichier matches.json mis à jour et sauvegardé avec ${parsedData.matches.length} matchs !`);
-
-  } catch (error) {
-    console.error(`❌ Erreur critique lors de l'exécution : ${error.message}`);
-    process.exit(1);
-  }
-}
-
-fetchMatches();
+      - name: Commiter et pousser les changements
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add matches.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "bot: mise à jour des matchs M8" && git push)
