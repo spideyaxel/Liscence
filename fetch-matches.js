@@ -1,27 +1,26 @@
 const fs = require('fs');
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-if (!GEMINI_API_KEY && !OPENAI_API_KEY) {
-  console.error("❌ ERREUR : Aucune clé API (Gemini ou OpenAI) n'est configurée !");
+if (!OPENAI_API_KEY) {
+  console.error("❌ ERREUR : La clé OPENAI_API_KEY est manquante dans les variables !");
   process.exit(1);
 }
 
+// 🎯 TON PROMPT RÉCUPÉRÉ ET OPTIMISÉ POUR LE JSON STRICT
 const promptText = `Tu es une API JSON stricte spécialisée dans les matchs esport de Gentle Mates (M8).
-À CHAQUE EXÉCUTION, effectue une recherche web en temps réel et récupère les données les plus récentes concernant TOUS les jeux esport dans lesquels Gentle Mates possède une équipe.
-SOURCE PRINCIPALE :
-https://bo3.gg/fr/valorant/teams/gentle-mates/matches
+À CHAQUE EXÉCUTION, effectue une recherche web en temps réel (ou utilise tes données les plus récentes) et récupère les données concernant TOUS les jeux esport dans lesquels Gentle Mates possède une équipe.
+SOURCE PRINCIPALE : [https://bo3.gg/fr/valorant/teams/gentle-mates/matches](https://bo3.gg/fr/valorant/teams/gentle-mates/matches) et sources fiables.
+
 IMPORTANT :
-- Ne te limite PAS à VALORANT.
-- Recherche également les autres équipes et jeux de Gentle Mates présents sur BO3.gg ou dans les sources esport fiables.
-- Détecte automatiquement les jeux disponibles.
-- Pour chaque jeu, récupère les matchs récemment terminés, les matchs en cours et tous les prochains matchs annoncés.
-- Les données doivent être actualisées à chaque exécution.
-- Ne réutilise jamais des données d'une exécution précédente.
-- N'invente aucune information.
-- Si une donnée est inconnue, utilise "".
-Pour chaque match, retourne exactement :
+- Ne te limite PAS à VALORANT. Recherche également les autres équipes et jeux.
+- Pour chaque jeu, récupère les matchs récemment terminés, en cours et tous les prochains matchs annoncés.
+- Les données doivent être actualisées. Ne réutilise jamais des données précédentes.
+- N'invente aucune information. Si une donnée est inconnue, utilise "0" pour le score.
+- Convertis les dates en ISO 8601 UTC.
+- Trie chronologiquement.
+
+FORMAT ATTENDU POUR CHAQUE MATCH :
 {
   "game": "Nom du jeu",
   "tournament": "Nom du tournoi",
@@ -31,96 +30,44 @@ Pour chaque match, retourne exactement :
   "team2": { "name": "Adversaire", "score": "1" }
 }
 STATUTS AUTORISÉS : "finished", "running", "upcoming".
-RÈGLES :
-- Retourne les matchs de TOUS les jeux de Gentle Mates.
-- Inclue les matchs récents et TOUS les prochains matchs.
-- Convertis les dates en ISO 8601 UTC.
-- Trie les résultats chronologiquement.
-FORMAT FINAL OBLIGATOIRE : [ { ... } ]
-CONTRAINTE ABSOLUE : Retourne UNIQUEMENT le tableau JSON brut. Aucun texte, aucun bloc \`\`\`json.`;
 
-// 🔹 FONCTION 1 : Appel à Google Gemini
-async function fetchWithGemini() {
-  console.log("🔄 Tentative de récupération avec Google Gemini...");
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      contents: [{ parts: [{ text: promptText }] }],
-      tools: [{ googleSearch: {} }]
-    })
-  });
+CONTRAINTE ABSOLUE : Tu dois OBLIGATOIREMENT retourner un objet JSON contenant une seule clé "matches" avec ton tableau de résultats à l'intérieur. 
+Exemple : { "matches": [ { ... }, { ... } ] }`;
 
-  if (!response.ok) throw new Error(`Erreur Gemini (${response.status})`);
-  const data = await response.json();
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
-}
-
-// 🔹 FONCTION 2 : Appel à OpenAI (Solution de secours)
-async function fetchWithOpenAI() {
-  console.log("🔄 Gemini a échoué. Prise de relais par OpenAI (GPT-4o)...");
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${OPENAI_API_KEY}`
-    },
-    body: JSON.stringify({
-      model: "gpt-4o", // Le modèle le plus performant pour le web
-      messages: [{ role: "user", content: promptText }]
-    })
-  });
-
-  if (!response.ok) throw new Error(`Erreur OpenAI (${response.status})`);
-  const data = await response.json();
-  return data.choices[0].message.content || "[]";
-}
-
-// 🔹 LOGIC PRINCIPALE
-async function generateMatches() {
-  let rawResponse = "";
-
-  try {
-    if (GEMINI_API_KEY) {
-      rawResponse = await fetchWithGemini();
-      console.log("✅ Données récupérées avec succès via Gemini !");
-    } else {
-      throw new Error("Clé Gemini introuvable.");
-    }
-  } catch (geminiError) {
-    console.warn(`⚠️ Problème avec Gemini : ${geminiError.message}`);
-    
-    try {
-      if (OPENAI_API_KEY) {
-        rawResponse = await fetchWithOpenAI();
-        console.log("✅ Données récupérées avec succès via OpenAI !");
-      } else {
-        throw new Error("Clé OpenAI introuvable. Impossible d'utiliser le relais.");
-      }
-    } catch (openAiError) {
-      console.error(`❌ OpenAI a également échoué : ${openAiError.message}`);
-      process.exit(1);
-    }
-  }
-
-  // Nettoyage du JSON
-  let cleanJson = rawResponse.replace(/```json/g, '').replace(/```/g, '').trim();
-  const firstBracket = cleanJson.indexOf('[');
-  const lastBracket = cleanJson.lastIndexOf(']');
+async function fetchMatches() {
+  console.log("🔄 Lancement de la récupération avec ton prompt (OpenAI GPT-4o)...");
   
-  if (firstBracket !== -1 && lastBracket !== -1) {
-    cleanJson = cleanJson.substring(firstBracket, lastBracket + 1);
-  }
-
-  // Sauvegarde
   try {
-    const parsedData = JSON.parse(cleanJson);
-    fs.writeFileSync('matches.json', JSON.stringify(parsedData, null, 2));
-    console.log("📁 Fichier matches.json enregistré !");
+    const response = await fetch("[https://api.openai.com/v1/chat/completions](https://api.openai.com/v1/chat/completions)", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o",
+        response_format: { type: "json_object" }, // 🪄 LA MAGIE : Bloque l'IA dans un format JSON parfait
+        messages: [{ role: "user", content: promptText }]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur API OpenAI (${response.status}) : ${await response.text()}`);
+    }
+    
+    const data = await response.json();
+    
+    // On parse le résultat qui est garanti d'être du JSON propre
+    const parsedData = JSON.parse(data.choices[0].message.content);
+    
+    // On extrait uniquement le tableau pour que ton fichier HTML (matchs.html) le lise correctement
+    fs.writeFileSync('matches.json', JSON.stringify(parsedData.matches, null, 2));
+    console.log(`✅ Fichier matches.json mis à jour et sauvegardé avec ${parsedData.matches.length} matchs !`);
+
   } catch (error) {
-    console.error("❌ Erreur de lecture du JSON généré :", error.message);
+    console.error(`❌ Erreur critique lors de l'exécution : ${error.message}`);
     process.exit(1);
   }
 }
 
-generateMatches();
+fetchMatches();
