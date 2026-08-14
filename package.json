@@ -1,0 +1,12 @@
+{
+  "name": "m8-matches-tracker",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "fetch-matches.js",
+  "scripts": {
+    "start": "node fetch-matches.js"
+  },
+  "dependencies": {
+    "@google/genai": "^0.1.1"
+  }
+}
