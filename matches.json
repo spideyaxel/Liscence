@@ -1,0 +1,86 @@
+[
+  {
+    "game": "Rocket League",
+    "tournament": "RLCS Europe Major Qualifiers",
+    "date": "2024-07-18T19:00:00Z",
+    "status": "finished",
+    "team1": {
+      "name": "Gentle Mates",
+      "score": "1"
+    },
+    "team2": {
+      "name": "Team BDS",
+      "score": "3"
+    }
+  },
+  {
+    "game": "Valorant",
+    "tournament": "VCL France 2024 Split 2",
+    "date": "2024-07-22T17:30:00Z",
+    "status": "finished",
+    "team1": {
+      "name": "Gentle Mates",
+      "score": "2"
+    },
+    "team2": {
+      "name": "Mandatory",
+      "score": "1"
+    }
+  },
+  {
+    "game": "League of Legends",
+    "tournament": "LFL Summer Split 2024",
+    "date": "2024-07-24T18:00:00Z",
+    "status": "finished",
+    "team1": {
+      "name": "Gentle Mates",
+      "score": "1"
+    },
+    "team2": {
+      "name": "Gameward",
+      "score": "0"
+    }
+  },
+  {
+    "game": "League of Legends",
+    "tournament": "LFL Summer Split 2024",
+    "date": "2024-07-26T19:00:00Z",
+    "status": "upcoming",
+    "team1": {
+      "name": "Gentle Mates",
+      "score": "0"
+    },
+    "team2": {
+      "name": "Aegis",
+      "score": "0"
+    }
+  },
+  {
+    "game": "Valorant",
+    "tournament": "VCL France 2024 Split 2",
+    "date": "2024-07-28T16:00:00Z",
+    "status": "upcoming",
+    "team1": {
+      "name": "Gentle Mates",
+      "score": "0"
+    },
+    "team2": {
+      "name": "Solary",
+      "score": "0"
+    }
+  },
+  {
+    "game": "Rocket League",
+    "tournament": "RLCS Europe Major Qualifiers",
+    "date": "2024-07-30T20:00:00Z",
+    "status": "upcoming",
+    "team1": {
+      "name": "Gentle Mates",
+      "score": "0"
+    },
+    "team2": {
+      "name": "Karmine Corp",
+      "score": "0"
+    }
+  }
+]
