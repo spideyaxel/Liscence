@@ -2,14 +2,13 @@ name: Actualisation des Matchs M8 (Gemini)
 
 on:
   schedule:
+    # S'exécute automatiquement toutes les 6 heures
     - cron: '0 */6 * * *'
-  workflow_dispatch:
+  workflow_dispatch: # Permet le déclenchement manuel depuis GitHub
 
 jobs:
   update-data:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
       - name: Récupérer le code du dépôt
@@ -18,16 +17,20 @@ jobs:
       - name: Configuration de Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '22'
+          cache: 'npm'
 
-      - name: Exécuter le script avec Gemini
+      - name: Installer les dépendances
+        run: npm install
+
+      - name: Exécuter le script d'actualisation
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node fetch-matches.js
 
-      - name: Commiter et pousser les changements
+      - name: Enregistrer et publier matches.json
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add matches.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "bot: mise à jour des matchs M8 (Gemini)" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: mise à jour automatique des matchs" && git push)
